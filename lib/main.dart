@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
 import 'package:make_source/idxstack.dart';
+import 'package:make_source/interactive.dart';
 import 'package:make_source/scrap.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: IdxStack(),
+    home: Interactive(),
   ));
 }
 
