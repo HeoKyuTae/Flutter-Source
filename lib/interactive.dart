@@ -1,8 +1,6 @@
-import 'dart:math';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:photo_view/photo_view.dart';
 
 class Interactive extends StatefulWidget {
   const Interactive({super.key});
@@ -17,8 +15,12 @@ class _InteractiveState extends State<Interactive> {
   bool zoom = false;
   double correctScaleValue = 1;
 
-  Size oriSize = const Size(0, 0);
-  Size vSize = const Size(0, 0);
+//view Size
+  Size oriSize = const Size(428.0, 428.0);
+  Size vSize = const Size(428.0, 428.0);
+//image Size
+  Size oriImgSize = const Size(0, 0);
+  Size imgSize = const Size(0, 0);
 
   double aspectRatio = 1;
   String viewSize = '1:1';
@@ -39,15 +41,19 @@ class _InteractiveState extends State<Interactive> {
     final newSize = Size(oriSize.width * aspectRatio, oriSize.height / aspectRatio);
 
     vSize = newSize;
-    print(vSize);
-
-    setMatrix();
+    calcSize();
     setState(() {});
   }
 
   @override
   void initState() {
-    setMatrix();
+    _transformationController.value = Matrix4(
+      1, 0, 0, 0, //
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1,
+    );
+
     super.initState();
   }
 
@@ -62,10 +68,39 @@ class _InteractiveState extends State<Interactive> {
     _transformationController.obs.refresh();
   }
 
+  calcSize() {
+    print('oriImgSize $oriImgSize');
+    print('vSize $vSize');
+    if (oriImgSize >= vSize) {
+      print('if');
+      imgSize = Size(0, vSize.height);
+    } else if (oriImgSize <= vSize) {
+      print('else if');
+      imgSize = Size(0, vSize.width);
+    } else {
+      print('else');
+      imgSize = Size(oriImgSize.width, 0);
+    }
+
+    setMatrix();
+  }
+
+  /*
+  1:1
+  width : vSize.width,
+  height : null,
+
+  4:5
+  width: null,
+  height: vSize.height,
+
+  1.91:1
+  width: imgSize.width,
+  height: null,
+  */
+
   @override
   Widget build(BuildContext context) {
-    oriSize = Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width);
-    // vSize = Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.width);
     return Scaffold(
       backgroundColor: Colors.red,
       body: SafeArea(
@@ -99,27 +134,72 @@ class _InteractiveState extends State<Interactive> {
                   ),
                 ),
                 Expanded(
-                    child: Center(
-                  child: Container(
-                      width: vSize.isEmpty ? oriSize.width : vSize.width,
-                      height: vSize.isEmpty ? oriSize.height : vSize.height,
-                      decoration: BoxDecoration(border: Border.all(width: 10)),
-                      alignment: Alignment.center,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: SingleChildScrollView(
-                          child: UnconstrainedBox(
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: Image.asset(
-                                // 'assets/images/t.jpg',
-                                'assets/images/c.jpeg',
-                                fit: BoxFit.cover,
+                    child: Stack(
+                  children: [
+                    Center(
+                      child: Container(
+                          width: vSize.isEmpty ? oriSize.width : vSize.width,
+                          height: vSize.isEmpty ? oriSize.height : vSize.height,
+                          decoration: BoxDecoration(color: Colors.white, border: Border.all()),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: correctScaleValue > 1 ? const NeverScrollableScrollPhysics() : null,
+                            child: SingleChildScrollView(
+                              physics: correctScaleValue > 1 ? const NeverScrollableScrollPhysics() : null,
+                              child: InteractiveViewer(
+                                // transformationController: _transformationController,
+                                onInteractionStart: (details) {
+                                  zoom = true;
+                                  setState(() {});
+                                },
+                                onInteractionUpdate: (details) {
+                                  correctScaleValue = _transformationController.value.getMaxScaleOnAxis();
+                                  print(correctScaleValue);
+                                  setState(() {});
+                                },
+                                onInteractionEnd: (details) {
+                                  zoom = false;
+                                  setState(() {});
+                                },
+                                minScale: 1,
+                                maxScale: 10,
+                                panEnabled: correctScaleValue > 1 ? true : false,
+                                child: Image.asset(
+                                  'assets/images/t.jpg',
+                                  // 'assets/images/c.jpeg',
+                                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                                    if (frame != null) {
+                                      oriImgSize = Size(context.width, context.height);
+
+                                      calcSize();
+                                    }
+                                    return child;
+                                  },
+                                  width: imgSize.width == 0 ? null : imgSize.width,
+                                  height: imgSize.height == 0 ? null : imgSize.height,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
+                          )),
+                    ),
+                    Center(
+                      child: Visibility(
+                        visible: zoom,
+                        child: Container(
+                          width: vSize.isEmpty ? oriSize.width : vSize.width,
+                          height: vSize.isEmpty ? oriSize.height : vSize.height,
+                          decoration: BoxDecoration(border: Border.all(color: Colors.white.withOpacity(0.3))),
+                          child: GridPaper(
+                            color: Colors.white.withOpacity(0.3),
+                            divisions: 1,
+                            interval: vSize.isEmpty ? oriSize.width / 3 : vSize.width / 3,
+                            subdivisions: 1,
                           ),
                         ),
-                      )),
+                      ),
+                    ),
+                  ],
                 ))
               ],
             ),
