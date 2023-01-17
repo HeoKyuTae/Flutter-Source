@@ -68,6 +68,27 @@ class _InteractiveState extends State<Interactive> {
     _transformationController.obs.refresh();
   }
 
+  /*
+calcSize() {
+    if (widget.indexItems.ratio == 1.91) {
+      imgSize = Size(Get.width, 0);
+    } else {
+      if (widget.indexItems.ratio == 0.8) {
+        if (widget.indexItems.entity.size.aspectRatio > widget.indexItems.ratio) {
+          imgSize = Size(0, Get.width);
+        } else {
+          imgSize = Size(widget.indexItems.size.width, 0);
+        }
+      } else {
+        imgSize = Size(Get.width, 0);
+      }
+    }
+
+    setState(() {});
+  }
+
+  */
+
   calcSize() {
     print('oriImgSize $oriImgSize');
     print('vSize $vSize');
