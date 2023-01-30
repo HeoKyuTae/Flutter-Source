@@ -20,6 +20,7 @@ class ColorMatrix extends StatefulWidget {
 
 class _ColorMatrixState extends State<ColorMatrix> with TickerProviderStateMixin {
   List<Filter> filters = presetFiltersList;
+  Map<String, List<int>?> cachedFilters = {};
 
   img.Image? image;
   String? fileName;
@@ -65,8 +66,9 @@ class _ColorMatrixState extends State<ColorMatrix> with TickerProviderStateMixin
       imageFile = File(pickedFile.path);
       fileName = basename(imageFile.path);
       var imgFile = img.decodeImage(await imageFile.readAsBytes());
-      // imgFile = img.copyResize(imgFile, width: 600);
+      imgFile = img.copyResize(imgFile!, width: 500);
 
+      cachedFilters = {};
       setState(() {
         image = imgFile!;
       });
@@ -228,8 +230,6 @@ class _ColorMatrixState extends State<ColorMatrix> with TickerProviderStateMixin
     );
   }
 
-  Map<String, List<int>?> cachedFilters = {};
-
   buildFilterThumbnail(Filter filter, img.Image? image, String? filename) {
     if (cachedFilters[filter.name] == null) {
       return FutureBuilder<List<int>>(
@@ -243,35 +243,44 @@ class _ColorMatrixState extends State<ColorMatrix> with TickerProviderStateMixin
             case ConnectionState.none:
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return const CircleAvatar(
-                radius: 10.0,
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                  strokeWidth: 1,
+              return Container(
+                width: 50,
+                height: 50,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                    strokeWidth: 0.1,
+                  ),
                 ),
-                backgroundColor: Colors.white,
               );
             case ConnectionState.done:
               if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
               cachedFilters[filter.name] = snapshot.data;
-              return CircleAvatar(
-                radius: 25.0,
-                backgroundImage: MemoryImage(
-                  snapshot.data as dynamic,
+              return Container(
+                width: 50,
+                height: 50,
+                child: CircleAvatar(
+                  backgroundImage: MemoryImage(
+                    snapshot.data as dynamic,
+                  ),
+                  backgroundColor: Colors.white,
                 ),
-                backgroundColor: Colors.white,
               );
           }
           // unreachable
         },
       );
     } else {
-      return CircleAvatar(
-        radius: 50.0,
-        backgroundImage: MemoryImage(
-          cachedFilters[filter.name] as dynamic,
+      return Container(
+        width: 50,
+        height: 50,
+        child: CircleAvatar(
+          radius: 50.0,
+          backgroundImage: MemoryImage(
+            cachedFilters[filter.name] as dynamic,
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
       );
     }
   }
