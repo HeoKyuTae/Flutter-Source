@@ -3,6 +3,7 @@ import 'package:make_source/animationmix.dart';
 import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
 import 'package:make_source/colormatrix.dart';
+import 'package:make_source/datep.dart';
 import 'package:make_source/idxstack.dart';
 import 'package:make_source/interactive.dart';
 import 'package:make_source/list.dart';
@@ -12,7 +13,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: ColorMatrix(),
+    home: DatePick(),
   ));
 }
 

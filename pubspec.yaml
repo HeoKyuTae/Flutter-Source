@@ -55,7 +55,7 @@ dependencies:
   flutter_animated_icons: ^1.0.1
   image_picker: ^0.8.6+1
   path: 
-  
+  flutter_cupertino_date_picker_fork: ^1.0.7
 dev_dependencies:
   flutter_test:
     sdk: flutter
