@@ -7,13 +7,14 @@ import 'package:make_source/datep.dart';
 import 'package:make_source/idxstack.dart';
 import 'package:make_source/interactive.dart';
 import 'package:make_source/list.dart';
+import 'package:make_source/mix_list.dart';
 import 'package:make_source/rotate.dart';
 import 'package:make_source/scrap.dart';
 import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: DatePick(),
+    home: MixList(),
   ));
 }
 
