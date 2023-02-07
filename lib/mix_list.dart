@@ -17,7 +17,7 @@ class _MixListState extends State<MixList> {
   @override
   void initState() {
     _scrollController.addListener(_addListListener);
-    _listviewController.addListener(_addListListener1);
+    _listviewController.addListener(_addListListener);
     generatorList();
     super.initState();
   }
@@ -29,27 +29,25 @@ class _MixListState extends State<MixList> {
   }
 
   _addListListener() {
-    // double maxScroll = _scrollController.position.maxScrollExtent;
-    // double currentScroll = _scrollController.position.pixels;
-    // double delta = 200.0; // or something else..
-    // if (maxScroll - currentScroll <= delta) {
-    //   generatorList();
-    // }
+    if (0.0 <= _listviewController.offset) {
+      if (_scrollController.offset >= 400) {
+        controller = false;
+        _scrollController.jumpTo(444);
 
-    // setState(() {});
-
-    print('_scrollController : ${_scrollController.offset}');
-
-    if (_scrollController.offset > 400) {
-      controller = false;
+        double maxScroll = _listviewController.position.maxScrollExtent;
+        double currentScroll = _listviewController.position.pixels;
+        double delta = 200.0; // or something else..
+        if (maxScroll - currentScroll <= delta) {
+          generatorList();
+        }
+      }
     } else {
       controller = true;
+      _scrollController.jumpTo(0);
     }
-    setState(() {});
-  }
 
-  _addListListener1() {
-    print('_listviewController : ${_listviewController.offset}');
+    print(controller);
+    setState(() {});
   }
 
   @override
@@ -59,9 +57,18 @@ class _MixListState extends State<MixList> {
     super.dispose();
   }
 
+  Widget tabbar() {
+    return Container(
+      height: 44,
+      color: Colors.green,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    var top = MediaQuery.of(context).viewPadding.top;
+    var bottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -74,36 +81,54 @@ class _MixListState extends State<MixList> {
                 child: const Text('TEXT'),
               ),
               Expanded(
-                  child: SingleChildScrollView(
-                controller: _scrollController,
-                physics: controller ? null : const NeverScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 400,
-                      color: Colors.red,
-                    ),
-                    Container(
-                      height: controller ? size.height - 48 : 0,
-                      child: ListView.builder(
-                        controller: _listviewController,
-                        shrinkWrap: controller,
-                        physics:
-                            controller ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-                        itemCount: 100,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              color: Colors.amber,
+                  child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: controller ? null : const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            print('object');
+                          },
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            height: 400,
+                            color: Colors.red,
+                            child: Column(
+                              children: [
+                                Text('RED'),
+                              ],
                             ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                          ),
+                        ),
+                        tabbar(),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: size.height - (44 + top + bottom)),
+                          child: ListView.builder(
+                            controller: _listviewController,
+                            shrinkWrap: controller,
+                            physics: controller ? const NeverScrollableScrollPhysics() : null,
+                            itemCount: list,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 100,
+                                  color: Colors.amber,
+                                  child: Text('$index'),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Visibility(visible: !controller, child: tabbar())
+                ],
               ))
             ],
           ),
