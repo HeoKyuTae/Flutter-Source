@@ -24,6 +24,7 @@ class _GridPhotoState extends State<GridPhoto> {
           e,
           isOriginal: false,
           fit: BoxFit.cover,
+          thumbnailFormat: ThumbnailFormat.jpeg,
         );
       }).toList(),
     );

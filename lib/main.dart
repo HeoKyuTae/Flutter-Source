@@ -20,7 +20,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: LocalImgResize(),
+    home: Photo(),
   ));
 }
 
