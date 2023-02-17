@@ -23,9 +23,6 @@ class _LocalImgResizeState extends State<LocalImgResize> {
   }
 
   getImage() async {
-    // var imageData = await rootBundle.load('asset/images/item.jpg');
-    // Image _receiptImage = await img.decodeImage(new File(imageData).readAsBytesSync());
-
     ByteData imageData = await rootBundle.load('assets/images/item.jpg');
     List<int> bytes = Uint8List.view(imageData.buffer);
     img.Image? receiptImage = img.decodeImage(bytes);
