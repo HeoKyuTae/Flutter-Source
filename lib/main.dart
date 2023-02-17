@@ -10,6 +10,7 @@ import 'package:make_source/idxstack.dart';
 import 'package:make_source/img_resize.dart';
 import 'package:make_source/interactive.dart';
 import 'package:make_source/list.dart';
+import 'package:make_source/local_img_resize.dart';
 import 'package:make_source/mix_list.dart';
 import 'package:make_source/photo_manager.dart';
 import 'package:make_source/png_to_jpg.dart';
@@ -19,7 +20,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: ImgResize(),
+    home: LocalImgResize(),
   ));
 }
 
