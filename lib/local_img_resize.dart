@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:make_source/fast_img_resize.dart' as fir;
 
 class LocalImgResize extends StatefulWidget {
   const LocalImgResize({super.key});
@@ -24,37 +24,54 @@ class _LocalImgResizeState extends State<LocalImgResize> {
 
   getImage() async {
     ByteData imageData = await rootBundle.load('assets/images/item.jpg');
-    List<int> bytes = Uint8List.view(imageData.buffer);
+    Uint8List bytes = Uint8List.view(imageData.buffer);
+
     img.Image? receiptImage = img.decodeImage(bytes);
 
-    var newjpeg = img.encodeJpg(receiptImage as img.Image);
+    img.Image? thumbnail = img.copyResize(
+      receiptImage!,
+      width: receiptImage.width,
+      height: receiptImage.height,
+      interpolation: img.Interpolation.cubic,
+    );
+
+    var newJpg = img.encodeJpg(thumbnail, quality: 100);
 
     final dir = await getImageDirectory(subDirectory: 'image');
-    file = await File('$dir/image_${DateTime.now().millisecondsSinceEpoch}.png').writeAsBytes(newjpeg);
-    print("file: $file");
+    file = File('$dir/image_${DateTime.now().millisecondsSinceEpoch}.jpg')..writeAsBytesSync(newJpg);
 
     resizeImage(file!);
-    setState(() {});
 
-    // /Users/mac/Library/Developer/CoreSimulator/Devices/E2DE9D2B-828C-41DF-BC3E-1F382498BD8B/data/Containers/Data/Application/2CC83ABD-E1F0-4649-8E79-85232EEC2203/Library/Caches/'
+    setState(() {});
   }
 
   resizeImage(File file) async {
-    img.Image? image = img.decodeImage(file.readAsBytesSync());
+    ///
+    final rawImage = await file.readAsBytes();
+    ByteData? byteData = await fir.resizeImage(
+      Uint8List.view(rawImage.buffer),
+      width: 725,
+      height: 725,
+    );
 
-    // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
+    ///
+    ///
+    Uint8List bytes = Uint8List.view(byteData!.buffer);
+
+    img.Image? image = img.decodeImage(bytes);
 
     img.Image? thumbnail = img.copyResize(
       image!,
       width: image.width,
       height: image.height,
-      interpolation: img.Interpolation.nearest,
+      interpolation: img.Interpolation.cubic,
     );
+
+    var newJpg = img.encodeJpg(thumbnail, quality: 100);
 
     // Save the thumbnail as a PNG.
     final dir = await getImageDirectory(subDirectory: 'resize');
-    resizefile = File('$dir/resize_${DateTime.now().millisecondsSinceEpoch}.png')
-      ..writeAsBytesSync(img.encodeJpg(thumbnail, quality: 20), flush: true);
+    resizefile = File('$dir/resize_${DateTime.now().millisecondsSinceEpoch}.jpg')..writeAsBytesSync(newJpg);
 
     setState(() {});
   }
@@ -76,6 +93,8 @@ class _LocalImgResizeState extends State<LocalImgResize> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
         child: Container(
