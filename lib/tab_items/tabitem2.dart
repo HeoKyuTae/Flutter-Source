@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class TabItem2 extends StatefulWidget {
   const TabItem2({super.key});
@@ -12,6 +10,7 @@ class TabItem2 extends StatefulWidget {
 class _TabItem2State extends State<TabItem2> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  int count = 50;
 
   @override
   void initState() {
@@ -23,6 +22,20 @@ class _TabItem2State extends State<TabItem2> with AutomaticKeepAliveClientMixin 
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
+      child: ListView.builder(
+        itemCount: count,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              height: 60,
+              child: Text('$index'),
+            ),
+          );
+        },
+      ),
     );
   }
 }

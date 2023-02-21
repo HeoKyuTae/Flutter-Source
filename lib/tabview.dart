@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:make_source/tabitem1.dart';
-import 'package:make_source/tabitem2.dart';
+import 'package:make_source/notification_center/notification_center.dart';
+import 'package:make_source/tab_items/tabitem1.dart';
+import 'package:make_source/tab_items/tabitem2.dart';
+import 'package:make_source/tab_items/tabitem3.dart';
+import 'package:make_source/tab_items/tabitem4.dart';
+import 'package:make_source/tab_items/tabitem_blank.dart';
 
 class BottomTabView extends StatefulWidget {
   const BottomTabView({super.key});
@@ -17,17 +18,45 @@ class _BottomTabViewState extends State<BottomTabView> with TickerProviderStateM
   var tabItems = const [
     TabItem1(),
     TabItem2(),
-    TabItem1(),
-    TabItem2(),
-    TabItem1(),
+    TabItemBlank(),
+    TabItem3(),
+    TabItem4(),
   ];
+
   int isSelect = 0;
 
   @override
   void initState() {
     _tabController = TabController(length: tabItems.length, vsync: this);
+    setNotification();
 
     super.initState();
+  }
+
+  setNotification() {
+    NotificationCenter().subscribe('tabitem1', () {
+      setState(() {
+        _tabController.index = 0;
+      });
+    });
+
+    NotificationCenter().subscribe('tabitem2', () {
+      setState(() {
+        _tabController.index = 1;
+      });
+    });
+
+    NotificationCenter().subscribe('tabitem3', () {
+      setState(() {
+        _tabController.index = 3;
+      });
+    });
+
+    NotificationCenter().subscribe('tabitem4', () {
+      setState(() {
+        _tabController.index = 4;
+      });
+    });
   }
 
   @override
@@ -78,7 +107,7 @@ class _BottomTabViewState extends State<BottomTabView> with TickerProviderStateM
                       if (value == 2) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Hello world'),
+                            content: Text('Snack'),
                           ),
                         );
                         setState(() {
