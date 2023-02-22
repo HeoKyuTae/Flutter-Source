@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
@@ -33,6 +36,7 @@ class Scrap extends StatefulWidget {
 }
 
 class _ScrapState extends State<Scrap> {
+  ScreenshotController screenshotController = ScreenshotController();
   late final WebViewController controller;
   List<Article> articles = [];
   List<Scraping> scraping = [];
@@ -43,6 +47,8 @@ class _ScrapState extends State<Scrap> {
 
   String url = 'https://google.com';
   // String finishUrl = '';
+
+  File? file;
 
   @override
   void initState() {
@@ -159,6 +165,21 @@ $body
     // });
   }
 
+  Future<String> getImageDirectory({String subDirectory = ''}) async {
+    final rootDir = await getTemporaryDirectory();
+    var dir = '${rootDir.path}/image';
+    if (subDirectory.isNotEmpty) {
+      dir = '$dir/$subDirectory';
+    }
+
+    final directory = Directory(dir);
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
+
+    return dir;
+  }
+
   // #docregion webview_widget
   @override
   Widget build(BuildContext context) {
@@ -191,6 +212,34 @@ $body
                 Expanded(child: Container()),
                 TextButton(
                     onPressed: () async {
+                      print('Screenshot');
+
+                      screenshotController.capture(delay: const Duration(milliseconds: 10)).then(
+                        (capturedImage) async {
+                          print(capturedImage);
+
+                          final dir = await getImageDirectory(subDirectory: 'screenshot');
+                          print(dir);
+
+                          if (capturedImage != null) {
+                            file = await File('$dir/square${DateTime.now().millisecondsSinceEpoch}.png')
+                                .writeAsBytes(capturedImage);
+                          }
+
+                          setState(() {});
+                        },
+                      ).catchError(
+                        (onError) {
+                          print(onError);
+                        },
+                      );
+                    },
+                    child: const Text('Screenshot')),
+                const SizedBox(
+                  width: 16,
+                ),
+                TextButton(
+                    onPressed: () async {
                       print('capture');
                       String docu = await controller.runJavaScriptReturningResult('document.body.innerHTML') as String;
                       // log(docu);
@@ -207,42 +256,61 @@ $body
             height: 1,
             color: Colors.grey,
           ),
-          Expanded(child: WebViewWidget(controller: controller)),
-          scraping.isEmpty
-              ? Container()
-              : Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        spreadRadius: 5,
-                        blurRadius: 10.0,
-                        offset: const Offset(0, -10), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: scraping.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                            width: 100,
-                            height: 100,
-                            // child: Image.network(articles[index].urlImage),
-                            child: Image.network(
-                              scraping[index].urlImage,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container();
-                              },
-                            )),
-                      );
-                    },
-                  ),
-                )
+          Expanded(
+            child: Stack(
+              children: [
+                Screenshot(
+                    controller: screenshotController,
+                    child: WebViewWidget(controller: controller, layoutDirection: TextDirection.rtl)),
+                Visibility(
+                    visible: file != null ? true : false,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: file != null
+                          ? Image.file(
+                              file!,
+                            )
+                          : Container(),
+                    ))
+              ],
+            ),
+          ),
+          Visibility(
+              // visible: scraping.isEmpty ? false : true,
+              visible: false,
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 10.0,
+                      offset: const Offset(0, -10), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: scraping.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Container(
+                          width: 100,
+                          height: 100,
+                          // child: Image.network(articles[index].urlImage),
+                          child: Image.network(
+                            scraping[index].urlImage,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container();
+                            },
+                          )),
+                    );
+                  },
+                ),
+              ))
         ],
       )),
     );
