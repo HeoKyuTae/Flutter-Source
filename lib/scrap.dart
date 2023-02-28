@@ -1,7 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -38,6 +41,10 @@ class Scrap extends StatefulWidget {
 class _ScrapState extends State<Scrap> {
   ScreenshotController screenshotController = ScreenshotController();
   late final WebViewController controller;
+  GlobalKey captureKey = GlobalKey();
+
+  late String generatedPdfFilePath;
+
   List<Article> articles = [];
   List<Scraping> scraping = [];
 
@@ -53,10 +60,6 @@ class _ScrapState extends State<Scrap> {
   @override
   void initState() {
     super.initState();
-
-    // getWebsiteData();
-
-    // finishUrl = url;
 
     // #docregion webview_controller
     controller = WebViewController()
@@ -75,12 +78,10 @@ class _ScrapState extends State<Scrap> {
             makeRequest(url);
           },
           onWebResourceError: (WebResourceError error) {
-            print('error : $error');
+            print('error : ${error.errorCode}');
+            controller.goBack();
           },
           onNavigationRequest: (NavigationRequest request) {
-            // if (request.url.startsWith('https://www.youtube.com/')) {
-            //   return NavigationDecision.prevent;
-            // }
             return NavigationDecision.navigate;
           },
         ),
@@ -91,46 +92,25 @@ class _ScrapState extends State<Scrap> {
 
   void makeRequest(String url) async {
     var response = await http.get(Uri.parse(url));
-    print(response.statusCode);
+    print('statusCode : ${response.statusCode}');
 
     if (response.statusCode == 200) {
       responsebody = response.body;
-      // String htmlToParse = response.body;
-      // log(htmlToParse);
     } else {
-      print(response.statusCode);
+      print('else statusCode : ${response.statusCode}');
     }
   }
 
   Future getWebsiteData(dynamic body) async {
-    // final url = Uri.parse('https://www.amazon.com/s?k=iphone');
-    // final response = await http.get(url);
     dom.Document html = dom.Document.html('''
-<html>
-$body
-</html>
-''');
-/*
-    final titles = html //
-        .querySelectorAll('h2 > a > span')
-        .map((e) => e.innerHtml.trim())
-        .toList();
+      <html>
+        $body
+      </html>
+    ''');
 
-    final urls = html //
-        .querySelectorAll('h2 > a')
-        .map((e) => 'https://www.amazon.com/${e.attributes['href']}')
-        .toList();
-
-    final urlImages = html //
-        .querySelectorAll('span > a > div > img')
-        .map((e) => e.attributes['src']!)
-        .toList();
-*/
-
-    final urlImages = html //
+    html //
         .querySelectorAll('img')
         .map((e) {
-      // => e.attributes['data-src']
       if (e.attributes['src'] != null) {
         if (!e.attributes['src'].toString().contains('favicon') &&
             !e.attributes['src'].toString().contains('svg') &&
@@ -153,31 +133,16 @@ $body
     }).toList();
 
     print(images.length);
-    log(images.toString());
+    // log(images.toString());
+
+    for (var i in images) {
+      print(i);
+    }
 
     setState(() {
       scraping = List.generate(images.length, (index) => Scraping(urlImage: images[index]));
       images = [];
     });
-    // setState(() {
-    //   articles = List.generate(
-    //       titles.length, (index) => Article(title: titles[index], url: urls[index], urlImage: urlImages[index]));
-    // });
-  }
-
-  Future<String> getImageDirectory({String subDirectory = ''}) async {
-    final rootDir = await getTemporaryDirectory();
-    var dir = '${rootDir.path}/image';
-    if (subDirectory.isNotEmpty) {
-      dir = '$dir/$subDirectory';
-    }
-
-    final directory = Directory(dir);
-    if (!directory.existsSync()) {
-      directory.createSync(recursive: true);
-    }
-
-    return dir;
   }
 
   // #docregion webview_widget
@@ -212,41 +177,9 @@ $body
                 Expanded(child: Container()),
                 TextButton(
                     onPressed: () async {
-                      print('Screenshot');
-
-                      screenshotController.capture(delay: const Duration(milliseconds: 10)).then(
-                        (capturedImage) async {
-                          print(capturedImage);
-
-                          final dir = await getImageDirectory(subDirectory: 'screenshot');
-                          print(dir);
-
-                          if (capturedImage != null) {
-                            file = await File('$dir/square${DateTime.now().millisecondsSinceEpoch}.png')
-                                .writeAsBytes(capturedImage);
-                          }
-
-                          setState(() {});
-                        },
-                      ).catchError(
-                        (onError) {
-                          print(onError);
-                        },
-                      );
-                    },
-                    child: const Text('Screenshot')),
-                const SizedBox(
-                  width: 16,
-                ),
-                TextButton(
-                    onPressed: () async {
                       print('capture');
                       String docu = await controller.runJavaScriptReturningResult('document.body.innerHTML') as String;
-                      // log(docu);
                       getWebsiteData(docu);
-                      // if (responsebody != null) {
-                      //   getWebsiteData(responsebody);
-                      // }
                     },
                     child: const Text('Capture')),
               ],
@@ -259,25 +192,15 @@ $body
           Expanded(
             child: Stack(
               children: [
-                Screenshot(
-                    controller: screenshotController,
-                    child: WebViewWidget(controller: controller, layoutDirection: TextDirection.rtl)),
-                Visibility(
-                    visible: file != null ? true : false,
-                    child: Container(
-                      color: Colors.black.withOpacity(0.3),
-                      child: file != null
-                          ? Image.file(
-                              file!,
-                            )
-                          : Container(),
-                    ))
+                WebViewWidget(
+                  controller: controller,
+                  layoutDirection: TextDirection.rtl,
+                ),
               ],
             ),
           ),
           Visibility(
-              // visible: scraping.isEmpty ? false : true,
-              visible: false,
+              visible: scraping.isEmpty ? false : true,
               child: Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -300,7 +223,6 @@ $body
                       child: Container(
                           width: 100,
                           height: 100,
-                          // child: Image.network(articles[index].urlImage),
                           child: Image.network(
                             scraping[index].urlImage,
                             errorBuilder: (context, error, stackTrace) {
@@ -316,23 +238,3 @@ $body
     );
   }
 }
-
-
-// Container(
-          //   height: 100,
-          //   color: Colors.grey.withOpacity(0.5),
-          //   child: ListView.builder(
-          //     scrollDirection: Axis.horizontal,
-          //     itemCount: articles.length,
-          //     itemBuilder: (context, index) {
-          //       return Padding(
-          //         padding: const EdgeInsets.all(4.0),
-          //         child: Container(
-          //           width: 100,
-          //           height: 100,
-          //           child: Image.network(articles[index].urlImage),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // )
