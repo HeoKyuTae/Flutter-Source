@@ -7,6 +7,7 @@ import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
 import 'package:make_source/idxstack.dart';
 import 'package:make_source/img_resize.dart';
+import 'package:make_source/inappScrap.dart';
 import 'package:make_source/interactive.dart';
 import 'package:make_source/list.dart';
 import 'package:make_source/local_img_resize.dart';
@@ -20,7 +21,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: Scrap(),
+    home: InappScrap(),
   ));
 }
 

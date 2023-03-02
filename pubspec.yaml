@@ -56,6 +56,7 @@ dependencies:
   flutter_cupertino_date_picker_fork: ^1.0.7
   photo_manager: ^2.5.2
   webview_flutter: ^4.0.2
+  flutter_inappwebview: ^5.7.2+3
   
 dev_dependencies:
   flutter_test:
