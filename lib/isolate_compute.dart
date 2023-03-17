@@ -74,9 +74,29 @@ class IsolateCompute extends StatefulWidget {
 class _IsolateComputeState extends State<IsolateCompute> {
   final List<Users> _users = [];
   List<Photo> _photo = [];
+  List<Photo> addPhoto = [];
+  int re = 9;
+  int count = 0;
 
   requestPhoto() async {
     _photo = await fetchPhotos();
+    setState(() {});
+  }
+
+  addPhotoList() {
+    for (var i = count; i < _photo.length; i++) {
+      if (i <= re) {
+        addPhoto.add(_photo[i]);
+      } else {
+        break;
+      }
+    }
+
+    count += 10;
+    re += 10;
+
+    print(addPhoto.length);
+
     setState(() {});
   }
 
@@ -106,95 +126,115 @@ class _IsolateComputeState extends State<IsolateCompute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-          child: Column(
-        children: [
-          Expanded(
-              child: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    height: 400,
-                    child: ListView.builder(
-                      itemCount: _photo.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          height: 60,
-                          child: Row(
-                            children: [
-                              Image.network(_photo[index].thumbnailUrl),
-                              Expanded(
-                                child: Wrap(
-                                  children: [
-                                    Text(_photo[index].title),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
+      body: SafeArea(
+        child: Container(
+            child: Column(
+          children: [
+            Expanded(
+                child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 400,
+                      child: ListView.builder(
+                        itemCount: addPhoto.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 60,
+                            child: Row(
+                              children: [
+                                Image.network(addPhoto[index].thumbnailUrl),
+                                Expanded(
+                                  child: Wrap(
+                                    children: [
+                                      Text(addPhoto[index].title),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 3, //1 개의 행에 보여줄 item 개수
-                      childAspectRatio: 1 / 1, //item 의 가로 1, 세로 2 의 비율
-                      mainAxisSpacing: 10, //수평 Padding
-                      crossAxisSpacing: 10, //수직 Padding
-                      children: List.generate(_users.length, (index) {
-                        //item 의 반목문 항목 형성
-                        return Container(
-                          alignment: Alignment.center,
-                          color: Colors.grey.withOpacity(0.3),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.network(
-                                _users[index].photo,
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 35,
-                                  color: Colors.black.withOpacity(0.8),
-                                  child: Text(
-                                    _users[index].name,
-                                    style: const TextStyle(color: Colors.white),
+                    Container(
+                        child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          addPhotoList();
+                        },
+                        child: const Text('더보기'),
+                      ),
+                    )),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 3, //1 개의 행에 보여줄 item 개수
+                        childAspectRatio: 1 / 1, //item 의 가로 1, 세로 2 의 비율
+                        mainAxisSpacing: 10, //수평 Padding
+                        crossAxisSpacing: 10, //수직 Padding
+                        children: List.generate(_users.length, (index) {
+                          //item 의 반목문 항목 형성
+                          return Container(
+                            alignment: Alignment.center,
+                            color: Colors.grey.withOpacity(0.3),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.network(
+                                  _users[index].photo,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 35,
+                                    color: Colors.black.withOpacity(0.8),
+                                    child: Text(
+                                      _users[index].name,
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )),
-          Container(
-            height: 60,
-            child: Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    requestList();
-                    requestPhoto();
-                  },
-                  child: const Text('Press')),
-            ),
-          )
-        ],
-      )),
+            )),
+            Container(
+              height: 60,
+              child: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        addPhotoList();
+                      },
+                      child: const Text('addPhoto length')),
+                  ElevatedButton(
+                      onPressed: () {
+                        requestList();
+                        requestPhoto();
+                      },
+                      child: const Text('Press')),
+                ],
+              )),
+            )
+          ],
+        )),
+      ),
     );
   }
 }
