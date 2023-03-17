@@ -10,6 +10,7 @@ import 'package:make_source/img_resize.dart';
 import 'package:make_source/inappScrap.dart';
 import 'package:make_source/insta_heart.dart';
 import 'package:make_source/interactive.dart';
+import 'package:make_source/isolate_compute.dart';
 import 'package:make_source/list.dart';
 import 'package:make_source/local_img_resize.dart';
 import 'package:make_source/mix_list.dart';
@@ -22,7 +23,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: InstaHeart(),
+    home: IsolateCompute(),
   ));
 }
 

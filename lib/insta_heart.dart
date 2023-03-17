@@ -33,23 +33,43 @@ class _InstaHeartState extends State<InstaHeart> {
                 dimension: 56,
                 child: Stack(
                   children: [
+                    // Stack(
+                    //   children: favIconDatas
+                    //       .map((e) => Positioned(
+                    //             right: 16,
+                    //             bottom: 16,
+                    //             child: FavIconAnimator(
+                    //               onAnimationFinished: () {
+                    //                 print('call');
+                    //                 setState(() {
+                    //                   if (favIconDatas.isNotEmpty) {
+                    //                     favIconDatas.removeAt(0);
+                    //                   }
+                    //                 });
+                    //               },
+                    //             ),
+                    //           ))
+                    //       .toList(),
+                    // ),
                     Stack(
-                      children: favIconDatas
-                          .map((e) => Positioned(
-                                right: 16,
-                                bottom: 16,
-                                child: FavIconAnimator(
-                                  onAnimationFinished: () {
-                                    print('call');
-                                    setState(() {
-                                      if (favIconDatas.isNotEmpty) {
-                                        favIconDatas.removeAt(0);
-                                      }
-                                    });
-                                  },
-                                ),
-                              ))
-                          .toList(),
+                      children: favIconDatas.map((e) {
+                        FavIconData favIconData = e;
+                        print('favIconData : ${favIconData.timestamp}');
+                        return Positioned(
+                          right: 16,
+                          bottom: 16,
+                          child: FavIconAnimator(
+                            onAnimationFinished: () {
+                              print('call');
+                              setState(() {
+                                if (favIconDatas.isNotEmpty) {
+                                  favIconDatas.remove(favIconData);
+                                }
+                              });
+                            },
+                          ),
+                        );
+                      }).toList(),
                     ),
                     GestureDetector(
                       onTap: _onTap,
@@ -109,9 +129,7 @@ class _FavIconAnimatorState extends State<FavIconAnimator> with TickerProviderSt
 
   _addListener() {
     if (animation.status == AnimationStatus.completed) {
-      print(animation.status);
       widget.onAnimationFinished();
-      animation.reset();
     }
   }
 
