@@ -6,6 +6,7 @@ import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
+import 'package:make_source/hero_anim.dart';
 import 'package:make_source/idxstack.dart';
 import 'package:make_source/img_resize.dart';
 import 'package:make_source/inappScrap.dart';
@@ -23,8 +24,12 @@ import 'package:make_source/scrap.dart';
 import 'package:make_source/tabview.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: CenterClipRect(),
+  runApp(MaterialApp(
+    initialRoute: '/',
+    routes: {
+      '/': (context) => const HeroAnimation(),
+      '/herofirst': (context) => const HeroFirst(),
+    },
   ));
 }
 
