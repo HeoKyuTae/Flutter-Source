@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:make_source/animationmix.dart';
 import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
+import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
@@ -23,7 +24,7 @@ import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: IsolateCompute(),
+    home: CenterClipRect(),
   ));
 }
 
