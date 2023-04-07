@@ -19,15 +19,17 @@ import 'package:make_source/mix_list.dart';
 
 import 'package:make_source/photo_manager.dart';
 import 'package:make_source/png_to_jpg.dart';
+import 'package:make_source/position_point.dart';
 import 'package:make_source/rotate.dart';
 import 'package:make_source/scrap.dart';
+import 'package:make_source/shimmer_loading.dart';
 import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const HeroAnimation(),
+      '/': (context) => const PositionPoint(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
