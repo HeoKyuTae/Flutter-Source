@@ -4,6 +4,7 @@ import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
 import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
+import 'package:make_source/container_ani.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
 import 'package:make_source/hero_anim.dart';
@@ -29,7 +30,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const PositionPoint(),
+      '/': (context) => const ContainerAni(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
