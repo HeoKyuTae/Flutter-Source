@@ -23,6 +23,7 @@ import 'package:make_source/png_to_jpg.dart';
 import 'package:make_source/position_point.dart';
 import 'package:make_source/rotate.dart';
 import 'package:make_source/scrap.dart';
+import 'package:make_source/scroll_ex.dart';
 import 'package:make_source/shimmer_loading.dart';
 import 'package:make_source/tabview.dart';
 
@@ -30,7 +31,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const ContainerAni(),
+      '/': (context) => const ScrollEX(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
