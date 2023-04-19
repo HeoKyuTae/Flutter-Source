@@ -8,6 +8,8 @@ import 'package:make_source/container_ani.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
 import 'package:make_source/games/game1.dart';
+import 'package:make_source/games/game2.dart';
+import 'package:make_source/games/game3.dart';
 import 'package:make_source/hero_anim.dart';
 import 'package:make_source/idxstack.dart';
 import 'package:make_source/img_resize.dart';
@@ -32,7 +34,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const Game1(),
+      '/': (context) => const Game3(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
