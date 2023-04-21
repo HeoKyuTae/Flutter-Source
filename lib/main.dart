@@ -28,13 +28,14 @@ import 'package:make_source/rotate.dart';
 import 'package:make_source/scrap.dart';
 import 'package:make_source/scroll_ex.dart';
 import 'package:make_source/shimmer_loading.dart';
+import 'package:make_source/sliver.dart';
 import 'package:make_source/tabview.dart';
 
 void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const Game3(),
+      '/': (context) => const SliverL(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
