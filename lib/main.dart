@@ -5,6 +5,7 @@ import 'package:make_source/box1.dart';
 import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
+import 'package:make_source/dataitem/datas.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
 import 'package:make_source/games/game1.dart';
@@ -35,7 +36,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const SliverL(),
+      '/': (context) => const Datas(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
