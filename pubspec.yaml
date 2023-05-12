@@ -58,6 +58,8 @@ dependencies:
   webview_flutter: ^4.0.2
   flutter_inappwebview: ^5.7.2+3
   swipe_cards: ^2.0.0+1
+  image_size_getter: ^2.1.2
+  
   
 dev_dependencies:
   flutter_test:

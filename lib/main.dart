@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:make_source/animationmix.dart';
 import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
+import 'package:make_source/cache_image.dart';
 import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
@@ -14,6 +15,7 @@ import 'package:make_source/games/game3.dart';
 import 'package:make_source/games/game4.dart';
 import 'package:make_source/hero_anim.dart';
 import 'package:make_source/idxstack.dart';
+import 'package:make_source/image_crop.dart';
 import 'package:make_source/img_resize.dart';
 import 'package:make_source/inappScrap.dart';
 import 'package:make_source/insta_heart.dart';
@@ -37,7 +39,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const Game4(),
+      '/': (context) => const CacheImage(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
