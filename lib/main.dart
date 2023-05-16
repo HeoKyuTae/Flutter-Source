@@ -24,6 +24,7 @@ import 'package:make_source/isolate_compute.dart';
 import 'package:make_source/list.dart';
 import 'package:make_source/local_img_resize.dart';
 import 'package:make_source/mix_list.dart';
+import 'package:make_source/painter.dart';
 
 import 'package:make_source/photo_manager.dart';
 import 'package:make_source/png_to_jpg.dart';
@@ -39,7 +40,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const CacheImage(),
+      '/': (context) => const Painter(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
