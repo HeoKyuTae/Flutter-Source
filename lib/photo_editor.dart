@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:paint_exam/image_painter.dart';
+import 'package:make_source/image_painter.dart';
 
 class PhotoEditor extends StatefulWidget {
   const PhotoEditor({super.key});
@@ -22,9 +22,7 @@ class _PhotoEditorState extends State<PhotoEditor> {
         child: Container(
           width: size.width,
           height: size.width,
-          decoration: BoxDecoration(
-              color: Colors.amber,
-              border: Border.all(color: Colors.grey.withOpacity(0.3))),
+          decoration: BoxDecoration(color: Colors.amber, border: Border.all(color: Colors.grey.withOpacity(0.3))),
           child: GestureDetector(
             onPanUpdate: (details) {
               setState(() {
