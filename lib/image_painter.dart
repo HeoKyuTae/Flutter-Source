@@ -105,7 +105,10 @@ class ImagePainter extends CustomPainter {
 
     var r = Rect.fromPoints(
       const Offset(0, 0),
-      Offset(size.width, size.height),
+      Offset(
+        image.width.toDouble(),
+        image.height.toDouble(),
+      ),
     );
 
     c.saveLayer(r, Paint());
@@ -125,7 +128,10 @@ class ImagePainter extends CustomPainter {
       filterQuality: FilterQuality.high,
       rect: Rect.fromPoints(
         const Offset(0, 0),
-        Offset(size.width, size.height),
+        Offset(
+          image.width.toDouble(),
+          image.height.toDouble(),
+        ),
       ),
       colorFilter: colorFilter,
       isAntiAlias: true,

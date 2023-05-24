@@ -3,6 +3,7 @@ import 'package:make_source/animationmix.dart';
 import 'package:make_source/box.dart';
 import 'package:make_source/box1.dart';
 import 'package:make_source/cache_image.dart';
+import 'package:make_source/canvas_exam/canvas_exam.dart';
 import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
@@ -42,7 +43,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const PhotoEditor(),
+      '/': (context) => const CanvasExam(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
