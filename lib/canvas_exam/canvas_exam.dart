@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:make_source/canvas_exam/draggable_painter.dart';
 import 'package:make_source/canvas_exam/drawing_model.dart';
 import 'package:make_source/canvas_exam/edge_painter.dart';
 import 'package:make_source/canvas_exam/node_painter.dart';
+import 'dart:ui' as ui;
 
 class CanvasExam extends StatefulWidget {
   const CanvasExam({super.key});
@@ -81,6 +83,29 @@ class _CanvasExamState extends State<CanvasExam> {
 
   void _handleLongPressMoveUpdate(details) {}
 
+  //로컬에서 이미지 불러오기
+
+  ui.Image? localImage;
+
+  Future<ui.Image> imageFromFilePath(String filePath) async {
+    var byteData = await rootBundle.load(filePath);
+    Uint8List lst = Uint8List.view(byteData.buffer);
+    var codec = await ui.instantiateImageCodec(lst);
+    var nextFrame = await codec.getNextFrame();
+    return nextFrame.image;
+  }
+
+  @override
+  void initState() {
+    getImage();
+    super.initState();
+  }
+
+  getImage() async {
+    localImage = await imageFromFilePath('assets/images/outer.png');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -115,14 +140,17 @@ class _CanvasExamState extends State<CanvasExam> {
         },
         */
 
-        child: CustomPaint(
-          painter: DraggablePainter(
-            model,
-            offsetX,
-            offsetY,
-          ),
-          child: Container(),
-        ),
+        child: localImage == null
+            ? const SizedBox.shrink()
+            : CustomPaint(
+                painter: DraggablePainter(
+                  model,
+                  offsetX,
+                  offsetY,
+                  localImage!,
+                ),
+                child: Container(),
+              ),
       ),
     );
   }

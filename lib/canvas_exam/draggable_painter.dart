@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:arrow_path/arrow_path.dart';
 import 'package:flutter/material.dart';
 import 'package:make_source/canvas_exam/drawing_model.dart';
+import 'dart:ui' as ui;
 
 class DraggablePainter extends CustomPainter {
   static const gridWidth = 50.0;
@@ -17,7 +18,14 @@ class DraggablePainter extends CustomPainter {
 
   final DrawingModel model;
 
-  DraggablePainter(this.model, this.offsetX, this.offsetY);
+  final ui.Image image;
+
+  DraggablePainter(
+    this.model,
+    this.offsetX,
+    this.offsetY,
+    this.image,
+  );
 
   void _drawBackground(Canvas canvas) {
     var paint = Paint()
@@ -128,19 +136,6 @@ class DraggablePainter extends CustomPainter {
     final offset = Offset(xCenter, yCenter);
 
     textPainter.paint(canvas, offset);
-
-    // rotateCanvas(
-    //   canvas: canvas,
-    //   cx: xCenter,
-    //   cy: yCenter,
-    //   angle: 1,
-    // );
-  }
-
-  void rotateCanvas({required Canvas canvas, required double cx, required double cy, required double angle}) {
-    canvas.translate(cx, cy);
-    canvas.rotate(angle);
-    canvas.translate(-cx, -cy);
   }
 
   void _drawCanvas(Canvas canvas) {
@@ -153,6 +148,11 @@ class DraggablePainter extends CustomPainter {
     _drawEdges(canvas);
     _drawNodes(canvas);
 
+    rotateCanvas(canvas: canvas, cx: _width.toDouble() / 2, cy: _height.toDouble() / 2, angle: pi * (0 / 180));
+
+    canvas.scale(1);
+    canvas.drawImage(image, Offset.zero, Paint());
+
     canvas.restore();
   }
 
@@ -161,9 +161,18 @@ class DraggablePainter extends CustomPainter {
     _width = size.width;
     _height = size.height;
 
+    print(_width);
+    print(_height);
+
     _drawCanvas(canvas);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+void rotateCanvas({required Canvas canvas, required double cx, required double cy, required double angle}) {
+  canvas.translate(cx, cy);
+  canvas.rotate(angle);
+  canvas.translate(-cx, -cy);
 }
