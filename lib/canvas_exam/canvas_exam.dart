@@ -142,14 +142,17 @@ class _CanvasExamState extends State<CanvasExam> {
 
         child: localImage == null
             ? const SizedBox.shrink()
-            : CustomPaint(
-                painter: DraggablePainter(
-                  model,
-                  offsetX,
-                  offsetY,
-                  localImage!,
+            : IgnorePointer(
+                ignoring: true,
+                child: CustomPaint(
+                  painter: DraggablePainter(
+                    model,
+                    offsetX,
+                    offsetY,
+                    localImage!,
+                  ),
+                  child: Container(),
                 ),
-                child: Container(),
               ),
       ),
     );
