@@ -41,7 +41,7 @@ dependencies:
   html: ^0.15.1
   get: ^4.6.5
   matrix4_transform: ^2.0.1
-  screenshot: ^1.3.0
+  screenshot: ^2.1.0
   path_provider: ^2.0.11
   extended_image_library: ^3.4.1
   scroll_to_index: ^3.0.1
@@ -60,6 +60,8 @@ dependencies:
   swipe_cards: ^2.0.0+1
   image_size_getter: ^2.1.2
   arrow_path: ^2.0.0
+  sqflite: ^2.2.8+4
+  uuid: ^3.0.6
   
   
 dev_dependencies:

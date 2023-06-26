@@ -8,6 +8,7 @@ import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
 import 'package:make_source/dataitem/datas.dart';
+import 'package:make_source/splite_data/data_lite.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
 import 'package:make_source/games/game1.dart';
@@ -37,13 +38,16 @@ import 'package:make_source/scroll_ex.dart';
 import 'package:make_source/shimmer_loading.dart';
 import 'package:make_source/sliver.dart';
 import 'package:make_source/snow_fall.dart';
+import 'package:make_source/splite_data/repository/sql_database.dart';
 import 'package:make_source/tabview.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SqlDataBase();
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const CanvasExam(),
+      '/': (context) => const DataLite(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
