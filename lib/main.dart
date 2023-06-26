@@ -8,6 +8,7 @@ import 'package:make_source/center_clip_rect.dart';
 import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
 import 'package:make_source/dataitem/datas.dart';
+import 'package:make_source/model/users_data.dart';
 import 'package:make_source/splite_data/data_lite.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
@@ -47,7 +48,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const DataLite(),
+      '/': (context) => const UsersData(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
