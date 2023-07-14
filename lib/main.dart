@@ -9,6 +9,9 @@ import 'package:make_source/closet_matrix.dart';
 import 'package:make_source/container_ani.dart';
 import 'package:make_source/dataitem/datas.dart';
 import 'package:make_source/model/users_data.dart';
+import 'package:make_source/particle_animation.dart';
+import 'package:make_source/particle_view.dart';
+import 'package:make_source/snow_animation.dart';
 import 'package:make_source/splite_data/data_lite.dart';
 import 'package:make_source/datep.dart';
 import 'package:make_source/extend_list.dart';
@@ -45,11 +48,11 @@ import 'package:make_source/todo_list.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SqlDataBase();
+  // SqlDataBase();
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => const TodoList(),
+      '/': (context) => const SnowAnimation(),
       '/herofirst': (context) => const HeroFirst(),
     },
   ));
